@@ -1,0 +1,22 @@
+
+[1mFrom:[0m /vagrant/contact_list_app/contact_list_app/contact.rb @ line 93 Contact.find:
+
+     [1;34m91[0m: [32mdef[0m [1;36mself[0m.[1;34mfind[0m(id)
+     [1;34m92[0m:           binding.pry
+ =>  [1;34m93[0m:     results = []
+     [1;34m94[0m:   [36m@@conn[0m.exec_params([31m[1;31m'[0m[31mSELECT * FROM contacts WHERE id = $1;[1;31m'[0m[31m[0m,[id]).each [32mdo[0m |result|
+     [1;34m95[0m: 
+     [1;34m96[0m:     results << create_from_row(result)
+     [1;34m97[0m:     [32mreturn[0m results[[1;34m0[0m].name
+     [1;34m98[0m:   [32mend[0m
+     [1;34m99[0m:   [1;34m# CSV.foreach('contacts.csv') do |row|[0m
+    [1;34m100[0m:   [1;34m#   if row[0].to_i == id[0m
+    [1;34m101[0m:   [1;34m#     puts "ID ##{row[0]} belongs to #{row[1]} with the email #{row[2]}.".colorize(:red)[0m
+    [1;34m102[0m:   [1;34m#     if row[3] != nil[0m
+    [1;34m103[0m:   [1;34m#       puts "#{row[1]}'s phone numbers are as follows: #{row[3]}".gsub(/\\/, '').gsub(/"/, '').gsub(//, '').colorize(:red)[0m
+    [1;34m104[0m:   [1;34m#     end[0m
+    [1;34m105[0m:   [1;34m#   end[0m
+    [1;34m106[0m:   [1;34m# end[0m
+    [1;34m107[0m:   [1;34m# TODO: Find the Contact in the 'contacts.csv' file with the matching id.[0m
+    [1;34m108[0m: [32mend[0m
+

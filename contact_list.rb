@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 require_relative 'contact'
-require 'csv'
+require_relative 'numbers'
 require 'colorize'
 require 'pry'
 
@@ -28,67 +28,76 @@ when ARGV[0] == "list"
   puts "--------------------------------------------------".colorize(:blue)
   puts "Here is a list of all the people in your contacts".colorize(:blue)
   puts "--------------------------------------------------".colorize(:blue)
-  Contact.all
-
+  contacts = Contact.all
+  pp contacts
   puts "--------------------------------------------------".colorize(:blue)
-  puts Contact.count.to_s.colorize(:blue) + " people are currently in your contact list.".colorize(:blue)
   puts "--------------------------------------------------".colorize(:blue)
-when ARGV[0] == "show"
-  Contact.find(ARGV[1].to_i)
+when ARGV[0] == "find"
+  contacts = Contact.find(ARGV[1].to_i)
+  if contacts.empty?
+    puts "doesn't exist"
+  else
+    pp contacts
+    end
 when ARGV[0] == "new"
   puts "What is your full name?".colorize(:red)
   name = STDIN.gets.chomp.downcase
   puts "What is your email address?".colorize(:red)
   email = STDIN.gets.chomp
-  puts "Did you have a phone number you wanted to add?"
+  contact = Contact.create(name, email)
+  if contact
+  puts "Did you have a phone number you wanted to add?".colorize(:red)
   answer = STDIN.gets.chomp 
-  if answer == "yes"
-    @numbers = []
+  else
+  puts "email already in the system"
+  end
+  if answer == "yes" && contact
     loop do
       puts "What is your phone number?"
-      phone_number = STDIN.gets.gsub(' ', '').to_i
+      @phone_number = STDIN.gets.gsub(' ', '').chomp
       puts "What sort of phone is this for?"
-      phone_type = STDIN.gets.chomp
+      @phone_type = STDIN.gets.chomp
+      ContactNumber.create(contact[0]["id"], @phone_number, @phone_type)
       puts "Any more phone numbers to add?"
       any_more = STDIN.gets.chomp
-      @numbers << [phone_number, phone_type]
       if any_more == "no"
         break
       end
     end
   end
-  Contact.create(name, email, @numbers)
+
 when ARGV[0] == "search"
   # Contact.search(ARGV[1])
   contact = Contact.search(ARGV[1])
-  if contact == nil
+  if contact.empty?
     puts "No one was found with the name #{ARGV[1]}"
+  else
+    puts contact
+  end
+when ARGV[0] == "update"
+  puts "Did you want to update the contact?"
+  answer = STDIN.gets.chomp.downcase
+  if answer == "yes"
+    puts "What is the new name?"
+    name = STDIN.gets.chomp.downcase
+    puts "What is your new email?"
+    email = STDIN.gets.chomp.downcase
+    updated = Contact.update(ARGV[1], name, email)
+    puts "ID has been updated."
+  elsif answer == "no"
+    puts "No updates to be made."
+  end
+when ARGV[0] == "destroy"
+  the_contact = Contact.destroy(ARGV[1])
+  if the_contact.nil?
+    puts "No one is under that ID number."
+  else
+    puts "deleted"
   end
 else
   puts "'#{ARGV}' is an invalid input, please try again."
 end
 
-
-
-
-# case ARGV[0]
-#   when nil
-#     ContactList.new
-#   when "list"
-#     Contact.all
-#   when "show"
-#     Contact.find(ARGV[1])
-#   when "new"
-#     puts "What is your full name?".colorize(:red)
-#     name = STDIN.gets.chomp.downcase
-#     puts "What is your email address?".colorize(:red)
-#     email = STDIN.gets.chomp
-#     Contact.create(name, email)
-#   when "search"
-#     Contact.search(ARGV[1])
-#   else
-#     puts "'#{ARGV}' is an invalid input, please try again."
-# end
 
 
 
